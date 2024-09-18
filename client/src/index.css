@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins;
+  scroll-behavior: smooth;
+  transition: all 0.4s cubic-bezier(0.45, 0, 0.1, 1);
+}
+
+.leaflet-control-container .leaflet-routing-container-hide {
+  display: none;
+}
+
+/*  Anti Aliasing */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Dark Background to make the MUI theme work seemlessly */
+  background-color: #121212;
+}
+
+/* Show the scrollbar for WebKit browsers (Chrome, Safari) */
+body::-webkit-scrollbar {
+  width: 0em;
+  /* Adjust the width as needed */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  /* Hide the thumb */
+}
+
+body::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Hide the track */
+}

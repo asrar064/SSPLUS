@@ -32,6 +32,10 @@ const storeAdminSchema: Schema = new Schema({
         type: String,
         required: true
     },
+    storeAddress: {
+        type: String,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
