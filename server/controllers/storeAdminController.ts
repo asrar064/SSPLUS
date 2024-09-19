@@ -3,9 +3,9 @@ import { Request, Response } from "express";
 import StoreAdmin from "../models/StoreAdminModel";
 
 export const signupStoreAdmin = async (req: Request, res: Response) => {
-    const { name, email, password, storeName, phone } = req.body;
+    const { name, email, password, storeName, phone, storeAddress } = req.body;
 
-    const newStoreAdmin = new StoreAdmin({ name, email, password, storeName, phone });
+    const newStoreAdmin = new StoreAdmin({ name, email, password, storeName, phone, storeAddress });
     try {
         await newStoreAdmin.save();
         res.status(201).json(newStoreAdmin);

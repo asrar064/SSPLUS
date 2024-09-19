@@ -1,7 +1,7 @@
 import { Button, ButtonProps, SxProps } from "@mui/material";
 
 interface StyledButtonProps extends ButtonProps {
-  text: string;
+  text: string | any;
   additonalStyles?: SxProps;
 }
 
@@ -18,7 +18,6 @@ function StyledButton({ text, additonalStyles, ...rest }: StyledButtonProps) {
         ...additonalStyles,
       }}
       {...rest}
-      variant="contained"
     >
       {text}
     </Button>
