@@ -12,37 +12,45 @@ import UserDataContext from "../context/UserDataContext";
 import { useContext } from "react";
 import UserContextTypes from "../types/UserDataContextTypes";
 import { useNavigate } from "react-router-dom";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 function Sidebar() {
-  const { userData }: UserContextTypes =
+  const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
 
   const navigate = useNavigate();
+  const { deleteFromLs } = useLocalStorage();
+
+  function Logout() {
+    deleteFromLs("storeAdmin");
+    setUserData!(undefined);
+    navigate("/");
+  }
 
   const appPages = [
     {
       name: "Dashboard",
-      path: "/dashboard",
+      path: "/store",
       icon: <Dashboard sx={{ mr: 2.5 }} />,
     },
     {
       name: "All Products",
-      path: "/all-products",
+      path: "all-products",
       icon: <Inventory sx={{ mr: 2.5 }} />,
     },
     {
       name: "Categories",
-      path: "/categories",
+      path: "categories",
       icon: <Category sx={{ mr: 2.5 }} />,
     },
     {
       name: "Statistics",
-      path: "/statistics",
+      path: "statistics",
       icon: <Analytics sx={{ mr: 2.5 }} />,
     },
     {
       name: "Account",
-      path: "/account",
+      path: "account",
       icon: <AccountBox sx={{ mr: 2.5 }} />,
     },
   ];
@@ -60,9 +68,11 @@ function Sidebar() {
     >
       {/* Pages */}
       <Box sx={{ width: "100%", ...ColFlex, marginTop: "10%" }}>
-        {appPages.map((page: any) => {
+        {appPages.map((page: any, index: number) => {
           return (
             <StyledButton
+              key={index}
+              onClick={() => navigate(page.path)}
               sx={{
                 width: "100%",
                 py: 2,
@@ -85,7 +95,7 @@ function Sidebar() {
             {userData?.name}
           </Typography>
           <StyledButton
-          onClick={() => navigate("/")}
+            onClick={Logout}
             additonalStyles={{ p: 0.75, backgroundColor: "error.dark" }}
             text={"Logout"}
           />

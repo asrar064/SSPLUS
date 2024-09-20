@@ -12,6 +12,7 @@ import { SnackBarContextTypes } from "../types/SnackbarTypes";
 import { useNavigate } from "react-router-dom";
 import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserDataContextTypes";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 interface LoginDataProps {
   email: string;
@@ -26,6 +27,8 @@ function Landing() {
 
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
 
+  const { setInLs } = useLocalStorage();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,7 +39,8 @@ function Landing() {
     },
     onSuccess: (data) => {
       console.log(data);
-      setUserData!(data.data.storeAdmin)
+      setUserData!(data.data.storeAdmin);
+      setInLs("storeAdmin", data.data.storeAdmin)
       navigate("/store");
     },
     onError: (err: any) => {

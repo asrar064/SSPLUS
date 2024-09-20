@@ -12,6 +12,7 @@ import { SnackBarContextTypes } from "../types/SnackbarTypes";
 import { useNavigate } from "react-router-dom";
 import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserDataContextTypes";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 interface SignupDataProps {
   name: string;
@@ -27,6 +28,8 @@ function Signup() {
 
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
   const { setUserData }: UserContextTypes = useContext(UserDataContext);
+
+  const { setInLs } = useLocalStorage();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -44,6 +47,7 @@ function Signup() {
     onSuccess: (data) => {
       //   console.log(data);
       setUserData!(data.data.storeAdmin);
+      setInLs("storeAdmin", data.data.storeAdmin);
       navigate("/store");
     },
     onError: (err: any) => {
