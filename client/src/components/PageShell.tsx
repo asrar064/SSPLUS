@@ -18,6 +18,7 @@ function PageShell({ children, headerText, contentGap = 2.5 }: PageShellProps) {
         justifyContent: "flex-start",
         width: "100%",
         minHeight: "90vh",
+        maxHeight: "90vh",
         overflow: "auto",
         gap: contentGap,
         p: 5,

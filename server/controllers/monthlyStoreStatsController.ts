@@ -1,12 +1,11 @@
-// controllers/monthlyStoreSalesController.ts
 import { Request, Response } from "express";
 import MonthlyStoreSales from "../models/MonthlyStoreSalesModel";
 
 // Create Monthly Store Sales record
 export const createMonthlyStoreSales = async (req: Request, res: Response) => {
     const { ofMonth, totalRevenue, totalProductsSold, ofStore } = req.body;
-
     const newSalesRecord = new MonthlyStoreSales({ ofMonth, totalRevenue, totalProductsSold, ofStore });
+    
     try {
         await newSalesRecord.save();
         res.status(201).json(newSalesRecord);
@@ -20,6 +19,34 @@ export const getMonthlyStoreSales = async (req: Request, res: Response) => {
     try {
         const salesRecords = await MonthlyStoreSales.find();
         res.status(200).json(salesRecords);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Get a Sales Record by Store ID and create if not found
+export const getSalesRecordById = async (req: Request, res: Response) => {
+    const { id } = req.params; // Store Admin ID
+
+    try {
+        // Search for a sales record with the store ID
+        let salesRecord = await MonthlyStoreSales.findOne({ ofStore: id });
+
+        // If no record is found, create one
+        if (!salesRecord) {
+            // Default sales data
+            salesRecord = new MonthlyStoreSales({
+                ofMonth: new Date().getMonth() + 1,  // Current month
+                totalRevenue: 0,
+                totalProductsSold: 0,
+                ofStore: id,
+            });
+
+            await salesRecord.save(); // Save the new record
+        }
+
+        // Return the sales record (whether found or newly created)
+        res.status(200).json(salesRecord);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

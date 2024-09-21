@@ -5,6 +5,7 @@ import {
   getMonthlyStoreSales,
   updateMonthlyStoreSales,
   deleteMonthlyStoreSales,
+  getSalesRecordById,
 } from "./../controllers/monthlyStoreStatsController";
 
 const monthlyStoreSalesRoutes = express.Router();
@@ -14,6 +15,9 @@ monthlyStoreSalesRoutes.post("/", createMonthlyStoreSales);
 
 // Route to get all Monthly Store Sales records
 monthlyStoreSalesRoutes.get("/", getMonthlyStoreSales);
+
+// Route to get Monthly Store Sales of a Store
+monthlyStoreSalesRoutes.get("/goc-stats/:id", getSalesRecordById);
 
 // Route to update a Monthly Store Sales record by ID
 monthlyStoreSalesRoutes.put("/:id", updateMonthlyStoreSales);

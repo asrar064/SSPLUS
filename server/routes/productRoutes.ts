@@ -4,7 +4,10 @@ import {
     createProduct,
     getProducts,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getProductsByOwnerId,
+    getProductsAddedToday,
+    getLowStockProducts
 } from "../controllers/productController";
 
 const productRoutes = express.Router();
@@ -14,6 +17,15 @@ productRoutes.post("/", createProduct); // Removed multer middleware
 
 // Route to get all Products
 productRoutes.get("/", getProducts);
+
+// Route to get all Store's Products
+productRoutes.get("/getProductsByOwnerId/:id", getProductsByOwnerId);
+
+// Route to get all Store's Products Added Recently
+productRoutes.get("/getProductsAddedToday/:id", getProductsAddedToday);
+
+// Route to get all Store's Products which need Restocking 
+productRoutes.get("/getLowStockProducts/:id", getLowStockProducts);
 
 // Route to update a Product by ID
 productRoutes.put("/:id", updateProduct); // Removed multer middleware

@@ -11,8 +11,8 @@ interface IMonthlyStoreSales extends Document {
 
 const monthlyStoreSalesSchema: Schema = new Schema({
     ofMonth: {
-        type: String,
-        required: true
+        type: Date,
+        default: Date.now
     },
     totalRevenue: {
         type: Number,

@@ -46,8 +46,8 @@ function Signup() {
     },
     onSuccess: (data) => {
       //   console.log(data);
-      setUserData!(data.data.storeAdmin);
-      setInLs("storeAdmin", data.data.storeAdmin);
+      setUserData!(data.data);
+      setInLs("storeAdmin", data.data);
       navigate("/store");
     },
     onError: (err: any) => {

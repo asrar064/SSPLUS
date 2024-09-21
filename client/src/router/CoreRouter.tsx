@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import UserContextTypes from "../types/UserDataContextTypes";
 import UserDataContext from "../context/UserDataContext";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Landing from "../pages/Landing";
 import { IOSExpand, SlideInOut } from "../animation/transitions";
@@ -19,6 +19,8 @@ function CoreRouter() {
   return (
     <AnimatePresence mode="wait">
       <Routes key={location.pathname} location={location}>
+        {/* NOT FOUND ROUTE */}
+        <Route path="*" element={<Navigate to="/" />} />
         <Route
           path="/"
           element={
