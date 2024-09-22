@@ -34,7 +34,7 @@ const productSchema: Schema = new Schema({
   },
   demandInMonths: {
     type: [String], // Array of strings for months
-    required: true,
+    default: [],
   },
   expiryDate: {
     type: Date,

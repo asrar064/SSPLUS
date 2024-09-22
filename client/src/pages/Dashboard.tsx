@@ -98,7 +98,9 @@ function Dashboard() {
         />
       </Box>
       {/* Table Container */}
-      {productsStatus && <TableComponent products={products} />}
+      {productsStatus && (
+        <TableComponent tableHeader="Recently Stocked" products={products} />
+      )}
     </PageShell>
   );
 }

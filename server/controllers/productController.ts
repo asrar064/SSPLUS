@@ -13,7 +13,7 @@ export const createProduct = async (req: Request, res: Response) => {
     category,
     quantity,
     picture,
-    ownerId,
+    owner,
   } = req.body;
 
   const processedImage = await ProcessImage(name, picture?.split(",")[1]);
@@ -27,7 +27,7 @@ export const createProduct = async (req: Request, res: Response) => {
     category,
     picture: processedImage, // Send Base64 Image Format
     quantity,
-    ownerId, // Reference to the owner (Store Admin)
+    owner, // Reference to the owner (Store Admin)
   });
 
   try {

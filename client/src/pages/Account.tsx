@@ -2,7 +2,7 @@ import PageShell from "../components/PageShell"
 
 function Account() {
   return (
-    <PageShell headerText="Accout Details">
+    <PageShell headerText="Account Details">
         content
     </PageShell>
   )

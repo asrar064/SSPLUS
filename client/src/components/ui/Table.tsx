@@ -22,19 +22,40 @@ import baseURL from "../../api/baseURL";
 import { RowFlex } from "../../theme/style_extentions/Flex";
 import { ProductProps } from "../../types/ProductProps";
 import SubHeader from "./SubHeader";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 // Define the TableComponent props, if any
 interface TableComponentProps {
   products: ProductProps[] | [];
+  tableHeader?: string;
 }
 
-const TableComponent: React.FC<TableComponentProps> = ({ products }) => {
+const TableComponent: React.FC<TableComponentProps> = ({
+  products,
+  tableHeader,
+}) => {
   // State to manage the menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // For the menu anchor
   const [openMenu, setOpenMenu] = useState<boolean>(false); // To control menu visibility
   const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(
     null
   ); // To store the selected employee
+
+  const { data: categories } = useQuery({
+    queryKey: ["Categories"],
+    queryFn: async () => {
+      return axios.get(baseURL + "categories");
+    },
+    select: (data) => {
+      return data.data;
+    },
+  });
+
+  const GetCategoryName = (categoryId: string): string | undefined => {
+    const category = categories?.find((cat: any) => cat._id === categoryId);
+    return category ? category.name : undefined; // returns category name or undefined if not found
+  };
 
   const handleMenuOpen = (event: any, product: ProductProps) => {
     setAnchorEl(event.currentTarget); // Set the anchor element for the menu
@@ -49,7 +70,9 @@ const TableComponent: React.FC<TableComponentProps> = ({ products }) => {
 
   return (
     <Box sx={{ width: "100%", height: "50vh" }}>
-      <SubHeader additionalStyles={{ mb: 2.5 }}>Recently Restocked</SubHeader>
+      {tableHeader && (
+        <SubHeader additionalStyles={{ mb: 2.5 }}>{tableHeader}</SubHeader>
+      )}
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="TM's table">
           <TableHead>
@@ -79,7 +102,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ products }) => {
                       }}
                     >
                       <Avatar
-                        src={baseURL + product?.picture}
+                        src={"http://localhost:3000/" + product?.picture}
                         sx={{
                           width: "30px",
                           height: "30px",
@@ -91,7 +114,9 @@ const TableComponent: React.FC<TableComponentProps> = ({ products }) => {
                   <TableCell align="left">{product.name}</TableCell>
                   <TableCell align="center">₹ {product.price}</TableCell>
                   <TableCell align="center">{product.quantity} units</TableCell>
-                  <TableCell align="center">{product.category}</TableCell>
+                  <TableCell align="center">
+                    {GetCategoryName(product.category)}
+                  </TableCell>
                   <TableCell align="center">
                     <MoreHoriz
                       sx={{ cursor: "pointer" }}
