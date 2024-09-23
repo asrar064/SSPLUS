@@ -16,7 +16,8 @@ connectDB();
 // Use CORS for CROSS ORIGIN REQUESTS
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://s-sense.vercel.app", "*"], // list your frontend URLs
+    // origin: ["http://localhost:5173", "https://s-sense.vercel.app", "*"], // list your frontend URLs
+    origin: true, // allow all origins
   })
 );
 
