@@ -1,4 +1,4 @@
-import express, { json, urlencoded } from "express";
+import express, { json, Request, Response, urlencoded } from "express";
 import connectDB from "./db/config.db";
 import cors from "cors";
 import storeAdminRoutes from "./routes/storeAdminRoutes";
@@ -20,6 +20,11 @@ app.use(
     origin: true, // allow all origins
   })
 );
+
+// Server Pinger
+app.get("/ping", (req: Request, res: Response) => {
+  res.status(200).send("Server is now running ;)");
+});
 
 // Middleware Functions
 app.use(json({ limit: "5mb" }));

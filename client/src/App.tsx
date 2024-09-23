@@ -9,6 +9,9 @@ import ProjectTheme from "./theme/MuiTheme";
 import GlobalSnackbar from "./components/ui/GlobalSnackbar";
 import SnackbarContext from "./context/SnackbarContext";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import axios from "axios";
+import baseURL from "./api/baseURL";
+import ServerLoading from "./pages/ServerLoading";
 
 function App() {
   const [themeMode] = useState<PaletteMode>("dark");
@@ -31,20 +34,37 @@ function App() {
     }
   };
 
+  const [isServerActive, setIsServerActive] = useState(false);
+
+  const ServerPinger = async () => {
+    await axios
+      .get(baseURL.slice(0, -7) + "ping")
+      .then((res) => {
+        setIsServerActive(true);
+        console.log(res.data);
+      })
+      .catch(() => setIsServerActive(false));
+  };
+
   useEffect(() => {
     AutoLogin();
+    ServerPinger();
   }, []);
 
-  return (
-    <ThemeProvider theme={ProjectTheme(themeMode)}>
-      <UserDataContext.Provider value={{ userData, setUserData }}>
-        <GlobalSnackbar value={{ openSnack, setOpenSnack }} />
-        <SnackbarContext.Provider value={{ openSnack, setOpenSnack }}>
-          <CoreRouter />
-        </SnackbarContext.Provider>
-      </UserDataContext.Provider>
-    </ThemeProvider>
-  );
+  if (isServerActive) {
+    return (
+      <ThemeProvider theme={ProjectTheme(themeMode)}>
+        <UserDataContext.Provider value={{ userData, setUserData }}>
+          <GlobalSnackbar value={{ openSnack, setOpenSnack }} />
+          <SnackbarContext.Provider value={{ openSnack, setOpenSnack }}>
+            <CoreRouter />
+          </SnackbarContext.Provider>
+        </UserDataContext.Provider>
+      </ThemeProvider>
+    );
+  } else {
+    return <ServerLoading />;
+  }
 }
 
 export default App;

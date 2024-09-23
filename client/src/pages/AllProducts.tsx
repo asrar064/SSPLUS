@@ -23,7 +23,7 @@ function AllProducts() {
   });
 
   return (
-    <PageShell headerText={`Store's Products (${products?.length})`}>
+    <PageShell headerText={`Store's Products (${products ? products?.length : 0})`}>
       {productsStatus && <TableComponent products={products} />}
     </PageShell>
   );

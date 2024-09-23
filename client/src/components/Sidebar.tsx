@@ -6,6 +6,7 @@ import {
   Category,
   Dashboard,
   Inventory,
+  PowerSettingsNew,
 } from "@mui/icons-material";
 import { ColFlex, RowFlex } from "../theme/style_extentions/Flex";
 import UserDataContext from "../context/UserDataContext";
@@ -13,10 +14,13 @@ import { useContext } from "react";
 import UserContextTypes from "../types/UserDataContextTypes";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import isXSmall from "../utils/isXSmall";
 
 function Sidebar() {
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
+
+  const { isXS } = isXSmall();
 
   const navigate = useNavigate();
   const { deleteFromLs } = useLocalStorage();
@@ -68,36 +72,60 @@ function Sidebar() {
     >
       {/* Pages */}
       <Box sx={{ width: "100%", ...ColFlex, marginTop: "10%" }}>
-        {appPages.map((page: any, index: number) => {
-          return (
-            <StyledButton
-              key={index}
-              onClick={() => navigate(page.path)}
-              sx={{
-                width: "100%",
-                py: 2,
-                justifyContent: "flex-start",
-                pl: 5,
-                color: "white",
-              }}
-              startIcon={page?.icon}
-              variant="text"
-              text={page.name}
-            />
-          );
-        })}
+        {!isXS
+          ? appPages.map((page: any, index: number) => {
+              return (
+                <StyledButton
+                  key={index}
+                  onClick={() => navigate(page.path)}
+                  sx={{
+                    width: "100%",
+                    py: 2,
+                    justifyContent: "flex-start",
+                    pl: 5,
+                    color: "white",
+                  }}
+                  startIcon={page?.icon}
+                  variant="text"
+                  text={page.name}
+                />
+              );
+            })
+          : appPages.map((page: any, index: number) => {
+              return (
+                <StyledButton
+                  key={index}
+                  onClick={() => navigate(page.path)}
+                  sx={{
+                    width: "100%",
+                    py: 2,
+                    justifyContent: "flex-start",
+                    pl: isXS ? "70%" : 5,
+                    color: "white",
+                  }}
+                  startIcon={page?.icon}
+                  variant="text"
+                  text={isXS ? "" : page.name}
+                />
+              );
+            })}
       </Box>
       {/* Account Box */}
       <Box sx={{ ...RowFlex, gap: 5, scale: 0.8 }}>
-        <Avatar sx={{ width: "75px", height: "75px" }} />
+        {!isXS && <Avatar sx={{ width: "75px", height: "75px" }} />}
         <Box sx={{ ...ColFlex, gap: 1 }}>
-          <Typography variant="h6" sx={{ color: "white" }}>
+          {!isXS &&<Typography variant="h6" sx={{ color: "white" }}>
             {userData?.name}
-          </Typography>
+          </Typography>}
           <StyledButton
+            startIcon={<PowerSettingsNew sx={{ mr: 2.5 }} />}
             onClick={Logout}
-            additonalStyles={{ p: 0.75, backgroundColor: "error.dark" }}
-            text={"Logout"}
+            additonalStyles={{
+              p: 0.75,
+              backgroundColor: isXS ? "transparent" : "error.dark",
+              pl: isXS ? "110%" : 5,
+            }}
+            text={isXS ? "" : "Logout"}
           />
         </Box>
       </Box>

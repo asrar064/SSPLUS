@@ -57,7 +57,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
     return category ? category.name : undefined; // returns category name or undefined if not found
   };
 
-  console.log(baseURL.slice(0, -7))
+  // console.log(baseURL.slice(0, -7))
 
   const handleMenuOpen = (event: any, product: ProductProps) => {
     setAnchorEl(event.currentTarget); // Set the anchor element for the menu
@@ -104,7 +104,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
                       }}
                     >
                       <Avatar
-                        src={baseURL.slice(0, -7) + product?.picture}
+                        // src={baseURL.slice(0, -7) + product?.picture || "/package-default.png"}
+                        src={"/package-default.png"} // Static Image due to Free Server Not Letting File Saves.
                         sx={{
                           width: "30px",
                           height: "30px",
