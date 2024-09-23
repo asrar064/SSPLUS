@@ -57,6 +57,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
     return category ? category.name : undefined; // returns category name or undefined if not found
   };
 
+  console.log(baseURL.slice(0, -7))
+
   const handleMenuOpen = (event: any, product: ProductProps) => {
     setAnchorEl(event.currentTarget); // Set the anchor element for the menu
     setOpenMenu(true); // Open the menu
@@ -102,7 +104,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                       }}
                     >
                       <Avatar
-                        src={"http://localhost:3000/" + product?.picture}
+                        src={baseURL.slice(0, -7) + product?.picture}
                         sx={{
                           width: "30px",
                           height: "30px",

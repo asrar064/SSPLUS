@@ -14,7 +14,11 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // Use CORS for CROSS ORIGIN REQUESTS
-app.use(cors({ origin: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://s-sense.vercel.app", "*"], // list your frontend URLs
+  })
+);
 
 // Middleware Functions
 app.use(json({ limit: "5mb" }));
