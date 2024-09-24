@@ -104,6 +104,53 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
+// Get Product by QR Number
+export const getProductByQrNumber = async (req: Request, res: Response) => {
+  const { id: qrNumber } = req.params;
+
+  try {
+    // Find the product by its QR Number
+    const product = await Product.findOne({ qrNumber });
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(product);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Subtract Stock from Product by ID
+export const subtractProductStock = async (req: Request, res: Response) => {
+  const { id } = req.params; // Get product ID from URL
+  const { quantity: unitsToSubtract } = req.body; // Get the number to subtract from the request body
+
+  try {
+    // Find the product by its ID
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Ensure unitsToSubtract is valid and stock does not go below 0
+    const newQuantity = product.quantity - unitsToSubtract;
+    if (newQuantity < 0) {
+      return res.status(400).json({ message: "Insufficient stock available" });
+    }
+
+    // Update the product's quantity
+    product.quantity = newQuantity;
+    await product.save();
+
+    res.status(200).json({ message: "Stock updated", product });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Update a Product
 export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;

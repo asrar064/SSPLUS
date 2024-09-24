@@ -6,6 +6,7 @@ import monthlyStoreSalesRoutes from "./routes/montlyStoreSalesRoutes";
 import path from "path"; // Import path to handle file paths
 import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
+import InvoiceRoutes from "./routes/invoiceRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,6 +36,7 @@ app.use("/api/v1/storeAdmin", storeAdminRoutes);
 app.use("/api/v1/monthlyStoreSales", monthlyStoreSalesRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/invoices", InvoiceRoutes);
 
 // Serve static files (images) from 'static' directory
 app.use("/", express.static(path.join(__dirname, "static")));

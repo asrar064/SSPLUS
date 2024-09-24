@@ -114,16 +114,18 @@ function Sidebar() {
       <Box sx={{ ...RowFlex, gap: 5, scale: 0.8 }}>
         {!isXS && <Avatar sx={{ width: "75px", height: "75px" }} />}
         <Box sx={{ ...ColFlex, gap: 1 }}>
-          {!isXS &&<Typography variant="h6" sx={{ color: "white" }}>
-            {userData?.name}
-          </Typography>}
+          {!isXS && (
+            <Typography variant="h6" sx={{ color: "white" }}>
+              {userData?.name}
+            </Typography>
+          )}
           <StyledButton
-            startIcon={<PowerSettingsNew sx={{ mr: 2.5 }} />}
+            startIcon={isXS && <PowerSettingsNew sx={{ mr: 2.5 }} />}
             onClick={Logout}
             additonalStyles={{
               p: 0.75,
               backgroundColor: isXS ? "transparent" : "error.dark",
-              pl: isXS ? "110%" : 5,
+              pl: isXS ? "110%" : 0,
             }}
             text={isXS ? "" : "Logout"}
           />

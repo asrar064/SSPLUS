@@ -24,14 +24,15 @@ function Dashboard() {
   const { data: storeStats } = useQuery({
     queryKey: ["storeStats"],
     queryFn: async () => {
-      return axios.get(
-        baseURL + "monthlyStoreSales/goc-stats/" + userData?._id
-      );
+      console.log(baseURL + "invoices/stats/" + userData?._id);
+      return axios.get(baseURL + "invoices/stats/" + userData?._id);
     },
     select: (data) => {
       return data.data;
     },
   });
+
+  console.log(storeStats);
 
   // Get Store's Products Query
   const { data: products, status: productsStatus } = useQuery({
