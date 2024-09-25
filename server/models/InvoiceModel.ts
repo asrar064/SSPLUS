@@ -23,7 +23,8 @@ const invoiceSchema: Schema = new Schema({
     required: true,
   },
   owner: {
-    type: String, // Assuming this references the store admin or owner ID
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "StoreAdmin",
     required: true,
   },
   createdAt: {

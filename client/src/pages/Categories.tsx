@@ -35,6 +35,7 @@ function Categories() {
             sx={{
               width: "30%",
               height: "200px",
+              mb:"3.3%",
               position: "relative",
               ...ColFlex,
               border: "5px solid white",
@@ -48,7 +49,7 @@ function Categories() {
             }}
             key={category._id}
           >
-            <Typography sx={{ color: "white", fontWeight: 600 }} variant="h5">
+            <Typography sx={{ color: "white", fontWeight: 600, textAlign:'center' }} variant="h5">
               {category.name}
             </Typography>
           </Box>

@@ -121,6 +121,21 @@ function SellStockModal({
     },
   });
 
+  function IncreaseQuantity() {
+    // Ensure the product's available quantity is not exceeded
+    if (foundProduct?.quantity && productQuantity < foundProduct.quantity) {
+      setProductQuantity(productQuantity + 1);
+    }
+  }
+  
+  function ReduceQuantity() {
+    // Ensure quantity doesn't go below 1
+    if (productQuantity > 1) {
+      setProductQuantity(productQuantity - 1);
+    }
+  }
+  
+
   useEffect(() => {
     if (foundProductStatus === "error") {
       setOpenSnack({
@@ -223,14 +238,25 @@ function SellStockModal({
                 </Box>
                 <Box sx={{ ...RowFlex, gap: 1.5, width: "40%" }}>
                   <StyledButton
-                    onClick={() => setProductQuantity(productQuantity + 1)}
+                    onClick={() => IncreaseQuantity()}
                     text={"+"}
-                    sx={{ width: "50px", height: "50px" }}
+                    sx={{
+                      width: "50px",
+                      height: "50px",
+                      color: "green",
+                      fontSize: 25,
+                      ml: "auto",
+                    }}
                   />
                   <StyledButton
-                    onClick={() => setProductQuantity(productQuantity - 1)}
+                    onClick={() => ReduceQuantity()}
                     text={"-"}
-                    sx={{ width: "50px", height: "50px" }}
+                    sx={{
+                      width: "50px",
+                      height: "50px",
+                      color: "red",
+                      fontSize: 25,
+                    }}
                   />
                 </Box>
               </Box>
@@ -264,6 +290,7 @@ function SellStockModal({
               //   console.log(result[0].rawValue);
               setFormView(true);
               setQrNumber(result[0].rawValue);
+              setSearchTrigger(true)
             }}
           />
         </Box>

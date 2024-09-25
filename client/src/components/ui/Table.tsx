@@ -82,6 +82,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
               <TableCell>Picture</TableCell>
               <TableCell>Name</TableCell>
               <TableCell align="center">Price</TableCell>
+              <TableCell align="center">QR Code</TableCell>
               <TableCell align="center">Quantity</TableCell>
               <TableCell align="center">Category</TableCell>
               <TableCell align="center">Actions</TableCell>
@@ -116,6 +117,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                   </TableCell>
                   <TableCell align="left">{product.name}</TableCell>
                   <TableCell align="center">₹ {product.price}</TableCell>
+                  <TableCell align="center">{product.qrNumber}</TableCell>
                   <TableCell align="center">{product.quantity} units</TableCell>
                   <TableCell align="center">
                     {GetCategoryName(product.category)}

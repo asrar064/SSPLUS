@@ -3,7 +3,9 @@ import {
   createInvoice,
   getInvoicesByOwner,
   getInvoiceById,
-  getMonthlyStoreStats
+  getMonthlyStoreStats,
+  getTopSellingProduct,
+  getLowestSellingProduct,
 } from "../controllers/invoiceController";
 
 const InvoiceRoutes = express.Router();
@@ -18,6 +20,12 @@ InvoiceRoutes.get("/owner/:owner", getInvoicesByOwner);
 InvoiceRoutes.get("/:id", getInvoiceById);
 
 // Get monthly store statistics (GET)
-InvoiceRoutes.get("/stats/:owner", getMonthlyStoreStats); // New route for monthly stats
+InvoiceRoutes.get("/stats/:owner", getMonthlyStoreStats);
+
+// Get Top Selling Product (GET)
+InvoiceRoutes.get("/getTopSellingProduct/:id", getTopSellingProduct);
+
+// Get Top Selling Product (GET)
+InvoiceRoutes.get("/getLowestSellingProduct/:id", getLowestSellingProduct);
 
 export default InvoiceRoutes;

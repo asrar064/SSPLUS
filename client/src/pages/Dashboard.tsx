@@ -24,7 +24,7 @@ function Dashboard() {
   const { data: storeStats } = useQuery({
     queryKey: ["storeStats"],
     queryFn: async () => {
-      console.log(baseURL + "invoices/stats/" + userData?._id);
+      // console.log(baseURL + "invoices/stats/" + userData?._id);
       return axios.get(baseURL + "invoices/stats/" + userData?._id);
     },
     select: (data) => {

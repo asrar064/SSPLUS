@@ -6,14 +6,22 @@ interface StatBoxProps {
   icon: ReactNode;
   title: string;
   value: string;
+  width?: string;
+  subtitle?: string;
 }
 
-const StatBox = ({ icon, title, value }: StatBoxProps) => {
+const StatBox = ({
+  icon,
+  title,
+  value,
+  width = "30%",
+  subtitle,
+}: StatBoxProps) => {
   return (
     <Box
       sx={{
         ...ColFlex,
-        width: "30%",
+        width,
         color: "white",
         p: 2.5,
         border: "5px solid white",
@@ -30,9 +38,16 @@ const StatBox = ({ icon, title, value }: StatBoxProps) => {
         }}
       >
         {icon}
-        <Typography variant="h4" fontWeight={600}>
-          {value}
-        </Typography>
+        <Box sx={{width: "100%", ...ColFlex, alignItems:"flex-start"}}>
+          <Typography variant="h4" fontWeight={600}>
+            {value}
+          </Typography>
+          {subtitle && (
+            <Typography variant="body1" fontWeight={600}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
       </Box>
       <Typography variant="body1" fontWeight={600}>
         {title}
