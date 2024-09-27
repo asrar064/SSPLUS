@@ -27,6 +27,8 @@ function Statistics() {
     },
   });
 
+  console.log(topSellingItem)
+
   // Get Store's getLowestSellingProduct Query
   const { data: lowestSellingProduct, status: _getLowestSellingProductStatus } =
     useQuery({

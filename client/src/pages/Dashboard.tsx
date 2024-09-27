@@ -16,9 +16,13 @@ import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserDataContextTypes";
 import FormatIntoKs from "../utils/FormatIntoKs";
 import StatBox from "../components/StatBox";
+import { useNavigate } from "react-router-dom";
+import WeeklyPurchasesChart from "../components/ui/WeeklyPurchaseChart";
 
 function Dashboard() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
+
+  const navigate = useNavigate()
 
   // Get Store Stats Query
   const { data: storeStats } = useQuery({
@@ -81,23 +85,25 @@ function Dashboard() {
           icon={<ShoppingBasket sx={{ fontSize: 40 }} />}
           title="Total Products Sold"
           value={FormatIntoKs(storeStats?.totalProductsSold || 0)}
-        />
+          />
         <StatBox
           icon={<CurrencyRupee sx={{ fontSize: 40 }} />}
           title="Revenue Generated"
           value={FormatIntoKs(storeStats?.totalRevenue || 0)}
-        />
+          />
         <StatBox
           icon={<NewReleases sx={{ fontSize: 40 }} />}
           title="New Products"
           value={FormatIntoKs(productsAddedToday?.length || 0)}
         />
         <StatBox
+          onClick={() => navigate("statistics")}
           icon={<ShowChart sx={{ fontSize: 40 }} />}
           title="Restocking Needed"
           value={FormatIntoKs(lowStockProducts?.length || 0)}
         />
       </Box>
+      <WeeklyPurchasesChart/>
       {/* Table Container */}
       {productsStatus && (
         <TableComponent tableHeader="Recently Stocked" products={products} />

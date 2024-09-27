@@ -5,7 +5,7 @@ interface IProduct extends Document {
   name: string; // Name of the product
   qrNumber: string; // Unique QR code for the product
   price: number; // Price of the product
-  demandInMonths: string[]; // Array of months indicating demand (format: YYYY-MM)
+  demandInMonth: string; // Array of months indicating demand (format: YYYY-MM)
   expiryDate: Date; // Expiry date of the product
   category: string; // Refers to the category ID
   picture?: string; // Path to the product image
@@ -32,9 +32,9 @@ const productSchema: Schema = new Schema({
     type: String,
     required: true,
   },
-  demandInMonths: {
-    type: [String], // Array of strings for months
-    default: [],
+  demandInMonth: {
+    type: String, // Array of strings for months
+    default: "",
   },
   expiryDate: {
     type: Date,

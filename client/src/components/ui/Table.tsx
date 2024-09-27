@@ -1,10 +1,5 @@
-import {
-  MoreHoriz,
-  Visibility,
-  EditLocation,
-  DeleteForever,
-} from "@mui/icons-material";
-import React, { useState } from "react";
+import { MoreHoriz, DeleteForever, Add, Edit } from "@mui/icons-material";
+import React, { useContext, useState } from "react";
 import {
   Box,
   TableContainer,
@@ -22,8 +17,17 @@ import baseURL from "../../api/baseURL";
 import { RowFlex } from "../../theme/style_extentions/Flex";
 import { ProductProps } from "../../types/ProductProps";
 import SubHeader from "./SubHeader";
-import { useQuery } from "@tanstack/react-query";
+import {
+  InvalidateQueryFilters,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
+import FormatIntoKs from "../../utils/FormatIntoKs";
+import EditStockModal from "../EditStockModal";
+import SnackbarContext from "../../context/SnackbarContext";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 
 // Define the TableComponent props, if any
 interface TableComponentProps {
@@ -41,6 +45,10 @@ const TableComponent: React.FC<TableComponentProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(
     null
   ); // To store the selected employee
+  const [openEditStockModal, setOpenEditStockModal] = useState<boolean>(false);
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+
+  const QC = useQueryClient();
 
   const { data: categories } = useQuery({
     queryKey: ["Categories"],
@@ -70,11 +78,46 @@ const TableComponent: React.FC<TableComponentProps> = ({
     setAnchorEl(null);
   };
 
+  const { mutate: deleteProduct, status: _deleteProductStatus } = useMutation({
+    mutationKey: ["Delete Product", selectedProduct?._id],
+    mutationFn: async () => {
+      return axios.delete(baseURL + "products/" + selectedProduct?._id);
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      setOpenSnack({
+        open: true,
+        message: selectedProduct?.name + " was removed!",
+        severity: "info",
+      });
+      setOpenMenu(false);
+      QC.invalidateQueries(["Products"] as unknown as InvalidateQueryFilters);
+    },
+    onError: (err: any) => {
+      setOpenSnack({
+        open: true,
+        message: err.response.data.message,
+        severity: "error",
+      });
+    },
+  });
+
+  // Function to handle the delete action
+  function HandleDeleteProduct() {
+    deleteProduct(); // Trigger the mutation
+  }
+
   return (
     <Box sx={{ width: "100%", height: "50vh" }}>
       {tableHeader && (
         <SubHeader additionalStyles={{ mb: 2.5 }}>{tableHeader}</SubHeader>
       )}
+      <EditStockModal
+        product={selectedProduct as ProductProps}
+        openModal={openEditStockModal}
+        setOpenModal={setOpenEditStockModal}
+        title="Change Stock Details"
+      />
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="TM's table">
           <TableHead>
@@ -116,7 +159,9 @@ const TableComponent: React.FC<TableComponentProps> = ({
                     </Box>
                   </TableCell>
                   <TableCell align="left">{product.name}</TableCell>
-                  <TableCell align="center">₹ {product.price}</TableCell>
+                  <TableCell align="center">
+                    ₹ {FormatIntoKs(product.price)}
+                  </TableCell>
                   <TableCell align="center">{product.qrNumber}</TableCell>
                   <TableCell align="center">{product.quantity} units</TableCell>
                   <TableCell align="center">
@@ -137,7 +182,11 @@ const TableComponent: React.FC<TableComponentProps> = ({
                       }}
                     >
                       <MenuItem
-                        onClick={() => console.log(selectedProduct?.name)}
+                        onClick={() => {
+                          setSelectedProduct(selectedProduct);
+                          setOpenEditStockModal(true);
+                          setOpenMenu(false);
+                        }}
                         sx={{
                           ...RowFlex,
                           color: "info.main",
@@ -146,11 +195,16 @@ const TableComponent: React.FC<TableComponentProps> = ({
                           gap: "10px",
                         }}
                       >
-                        <Visibility />
+                        <Add />
                         Add Stock
                       </MenuItem>
                       <Divider />
                       <MenuItem
+                        onClick={() => {
+                          setSelectedProduct(selectedProduct);
+                          setOpenEditStockModal(true);
+                          setOpenMenu(false);
+                        }}
                         sx={{
                           ...RowFlex,
                           color: "warning.main",
@@ -159,11 +213,12 @@ const TableComponent: React.FC<TableComponentProps> = ({
                           gap: "10px",
                         }}
                       >
-                        <EditLocation />
-                        Edit Stock Details
+                        <Edit />
+                        Change Details
                       </MenuItem>
                       <Divider />
                       <MenuItem
+                        onClick={HandleDeleteProduct}
                         sx={{
                           ...RowFlex,
                           color: "error.main",

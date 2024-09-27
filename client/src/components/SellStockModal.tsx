@@ -32,12 +32,9 @@ function SellStockModal({
   setOpenModal,
 }: AddStockModalProps) {
   const [formView, setFormView] = useState<boolean>(false);
-
   const QC = useQueryClient();
-
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
   const { userData }: UserContextTypes = useContext(UserDataContext);
-
   const [qrNumber, setQrNumber] = useState<string>("");
   const [searchTrigger, setSearchTrigger] = useState<boolean>(false);
   const [productQuantity, setProductQuantity] = useState<number>(1);
@@ -53,12 +50,12 @@ function SellStockModal({
     },
   });
 
-  function SearchProduct(e: FormEvent) {
-    setSearchTrigger(true);
-    e.preventDefault();
-  }
+  // console.log(foundProductStatus, searchTrigger);
 
-  //   console.log(foundProduct);
+  function SearchProduct(e: FormEvent) {
+    e.preventDefault();
+    setSearchTrigger(true);
+  }
 
   const { mutate: sellProduct, status: sellProductStatus } = useMutation({
     mutationKey: ["Product Sold" + foundProduct?._id],
@@ -69,7 +66,7 @@ function SellStockModal({
       );
     },
     onSuccess: async (data) => {
-      console.log(data);
+      // console.log(data);
       createInvoice();
       setOpenSnack({
         open: true,
@@ -77,7 +74,6 @@ function SellStockModal({
         severity: "success",
       });
       setOpenModal(false);
-      //   QC.invalidateQueries(["Products"]);
       QC.invalidateQueries(["Products"] as unknown as InvalidateQueryFilters);
     },
     onError: (err: any) => {
@@ -92,7 +88,6 @@ function SellStockModal({
   function SellProduct(e: FormEvent) {
     e.preventDefault();
     const sellProdData = { quantity: productQuantity };
-    // console.log(sellProdData);
     sellProduct(sellProdData);
   }
 
@@ -116,25 +111,20 @@ function SellStockModal({
     },
     onError: (error) => {
       console.error("Error creating invoice:", error);
-      // Here you can handle the error
-      // For example, show an error message to the user
     },
   });
 
   function IncreaseQuantity() {
-    // Ensure the product's available quantity is not exceeded
     if (foundProduct?.quantity && productQuantity < foundProduct.quantity) {
       setProductQuantity(productQuantity + 1);
     }
   }
-  
+
   function ReduceQuantity() {
-    // Ensure quantity doesn't go below 1
     if (productQuantity > 1) {
       setProductQuantity(productQuantity - 1);
     }
   }
-  
 
   useEffect(() => {
     if (foundProductStatus === "error") {
@@ -149,6 +139,8 @@ function SellStockModal({
   useEffect(() => {
     if (!openModal) {
       setFormView(false);
+      setSearchTrigger(false);
+      setQrNumber("");
     }
   }, [openModal]);
 
@@ -158,143 +150,129 @@ function SellStockModal({
       openModal={openModal}
       setOpenModal={setOpenModal}
     >
-      {formView ? (
-        <Box
-          component={"form"}
-          onSubmit={SearchProduct}
-          sx={{
-            ...ColFlex,
-            overflow: "hidden",
-            m: "auto",
-            p: 2.5,
-            maxWidth: "90%",
-            width: { xs: "80%", md: "100%" },
-            justifyContent: "space-between",
-            gap: "15px",
-          }}
-        >
-          {/* Sell Prod Form Rows */}
-          {!foundProduct && (
-            <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>
-              <StyledInput
-                value={qrNumber}
-                onChange={(e) => setQrNumber(e.target.value)}
-                required
-                fullWidth
-                type="text"
-                placeholder="Search with QR Number"
-              />
-            </Box>
-          )}
-          {!foundProduct && (
-            <StyledButton
-              type="submit"
-              //   disabled={foundProductStatus === "pending"}
-              text={"Search"}
-              //   text={
-              //     foundProductStatus === "pending" ? (
-              //       <CircularProgress size={15} sx={{ color: "white" }} />
-              //     ) : (
-              //       "Search"
-              //     )
-              //   }
-              additonalStyles={{
-                mt: 1,
-              }}
-            />
-          )}
-          {/* Searched Product */}
-          {foundProduct && (
-            <Box sx={{ width: "100%", ...ColFlex, gap: 2.5 }}>
-              <Box
-                sx={{
-                  width: "100%",
-                  p: 2.5,
-                  borderRadius: "10px",
-                  border: "1px solid #ccc",
-                  ...RowFlex,
-                  gap: 1.5,
-                }}
-              >
+      <Box
+        component={"form"}
+        onSubmit={SearchProduct}
+        sx={{
+          ...ColFlex,
+          overflow: "hidden",
+          m: "auto",
+          p: 2.5,
+          maxWidth: "90%",
+          width: { xs: "80%", md: "100%" },
+          justifyContent: "space-between",
+          gap: "15px",
+        }}
+      >
+        {/* Conditional rendering based on product search state */}
+        {formView ? (
+          <>
+            {!foundProduct && !searchTrigger && (
+              <>
+                <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>
+                  <StyledInput
+                    value={qrNumber}
+                    onChange={(e) => setQrNumber(e.target.value)}
+                    required
+                    fullWidth
+                    type="text"
+                    placeholder="Search with QR Number"
+                  />
+                </Box>
+                <StyledButton
+                  type="submit"
+                  text={"Search"}
+                  additonalStyles={{ mt: 1 }}
+                />
+              </>
+            )}
+            {foundProduct && (
+              <Box sx={{ width: "100%", ...ColFlex, gap: 2.5 }}>
                 <Box
                   sx={{
+                    width: "100%",
+                    p: 2.5,
+                    borderRadius: "10px",
+                    border: "1px solid #ccc",
                     ...RowFlex,
-                    // justifyContent: "flex-start",
-                    justifyContent: "space-between",
-                    gap: 5,
-                    width: "60%",
-                    pl: 2.5,
+                    gap: 1.5,
                   }}
                 >
-                  <Typography sx={{ color: "white", fontWeight: 600 }}>
-                    {foundProduct?.name}
-                  </Typography>
-                  <Typography sx={{ color: "white", fontWeight: 600 }}>
-                    ₹ {(foundProduct?.price as number) * productQuantity}
-                  </Typography>
-                  <Typography sx={{ color: "white", fontWeight: 600 }}>
-                    {productQuantity} units
-                  </Typography>
-                </Box>
-                <Box sx={{ ...RowFlex, gap: 1.5, width: "40%" }}>
-                  <StyledButton
-                    onClick={() => IncreaseQuantity()}
-                    text={"+"}
+                  <Box
                     sx={{
-                      width: "50px",
-                      height: "50px",
-                      color: "green",
-                      fontSize: 25,
-                      ml: "auto",
+                      ...RowFlex,
+                      justifyContent: "space-between",
+                      gap: 5,
+                      width: "60%",
+                      pl: 2.5,
                     }}
-                  />
-                  <StyledButton
-                    onClick={() => ReduceQuantity()}
-                    text={"-"}
-                    sx={{
-                      width: "50px",
-                      height: "50px",
-                      color: "red",
-                      fontSize: 25,
-                    }}
-                  />
+                  >
+                    <Typography sx={{ color: "white", fontWeight: 600 }}>
+                      {foundProduct?.name}
+                    </Typography>
+                    <Typography sx={{ color: "white", fontWeight: 600 }}>
+                      ₹ {(foundProduct?.price as number) * productQuantity}
+                    </Typography>
+                    <Typography sx={{ color: "white", fontWeight: 600 }}>
+                      {productQuantity} units
+                    </Typography>
+                  </Box>
+                  <Box sx={{ ...RowFlex, gap: 1.5, width: "40%" }}>
+                    <StyledButton
+                      onClick={IncreaseQuantity}
+                      text={"+"}
+                      sx={{
+                        width: "50px",
+                        height: "50px",
+                        color: "green",
+                        fontSize: 25,
+                        ml: "auto",
+                      }}
+                    />
+                    <StyledButton
+                      onClick={ReduceQuantity}
+                      text={"-"}
+                      sx={{
+                        width: "50px",
+                        height: "50px",
+                        color: "red",
+                        fontSize: 25,
+                      }}
+                    />
+                  </Box>
                 </Box>
+                <StyledButton
+                  onClick={SellProduct}
+                  disabled={sellProductStatus === "pending"}
+                  text={
+                    sellProductStatus === "pending" ? (
+                      <CircularProgress size={15} sx={{ color: "white" }} />
+                    ) : (
+                      "Sell Products"
+                    )
+                  }
+                  additonalStyles={{ mt: 1 }}
+                />
               </Box>
-              <StyledButton
-                onClick={SellProduct}
-                // text="Sell Products"
-                disabled={sellProductStatus === "pending"}
-                text={
-                  sellProductStatus === "pending" ? (
-                    <CircularProgress size={15} sx={{ color: "white" }} />
-                  ) : (
-                    "Sell Products"
-                  )
-                }
-                additonalStyles={{
-                  mt: 1,
-                }}
-              />
-            </Box>
-          )}
-        </Box>
-      ) : (
-        <Box sx={{ ...ColFlex, width: "100%", height: "100%" }}>
-          <Clear
-            sx={{ color: "white", m: 2 }}
-            onClick={() => setFormView(true)}
-          />
-          <Scanner
-            styles={{ container: { width: "500px", height: "500px" } }}
-            onScan={(result) => {
-              //   console.log(result[0].rawValue);
-              setFormView(true);
-              setQrNumber(result[0].rawValue);
-              setSearchTrigger(true)
-            }}
-          />
-        </Box>
-      )}
+            )}
+          </>
+        ) : (
+          <Box sx={{ ...ColFlex, width: "100%", height: "100%" }}>
+            <Clear
+              sx={{ color: "white", m: 2 }}
+              onClick={() => setFormView(true)}
+            />
+            <Scanner
+              styles={{ container: { width: "500px", height: "500px" } }}
+              onScan={(result) => {
+                setFormView(true);
+                setQrNumber(result[0].rawValue);
+                setSearchTrigger(true);
+              }}
+            />
+          </Box>
+        )}
+      </Box>
     </GlobalModal>
   );
 }

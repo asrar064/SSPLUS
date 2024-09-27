@@ -118,6 +118,13 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
   useEffect(() => {
     if (!openModal) {
       setFormView(false);
+      setName("");
+      setQrNumber("");
+      setPrice(0);
+      setDemandInMonth("");
+      setExpiryDate("");
+      setCategory("");
+      setPicture("");
     }
   }, [openModal]);
 
@@ -230,7 +237,7 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
               onChange={(e) => setExpiryDate(e.target.value)}
               required
               fullWidth
-              type="text"
+              type="date"
               placeholder="Expriy Date"
             />
           </Box>

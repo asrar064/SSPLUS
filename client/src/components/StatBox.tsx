@@ -8,6 +8,7 @@ interface StatBoxProps {
   value: string;
   width?: string;
   subtitle?: string;
+  onClick?: () => void | any;
 }
 
 const StatBox = ({
@@ -16,6 +17,7 @@ const StatBox = ({
   value,
   width = "30%",
   subtitle,
+  onClick,
 }: StatBoxProps) => {
   return (
     <Box
@@ -27,7 +29,9 @@ const StatBox = ({
         border: "5px solid white",
         borderRadius: "10px",
         gap: 2,
+        cursor: onClick ? "pointer" : "default",
       }}
+      onClick={onClick}
     >
       <Box
         sx={{
@@ -38,7 +42,7 @@ const StatBox = ({
         }}
       >
         {icon}
-        <Box sx={{width: "100%", ...ColFlex, alignItems:"flex-start"}}>
+        <Box sx={{ width: "100%", ...ColFlex, alignItems: "flex-start" }}>
           <Typography variant="h4" fontWeight={600}>
             {value}
           </Typography>

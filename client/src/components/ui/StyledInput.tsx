@@ -1,9 +1,5 @@
 import { TextField, TextFieldProps } from "@mui/material";
 
-// interface StyledInputProps extends TextFieldProps {
-
-// }
-
 function StyledInput({ ...rest }: TextFieldProps) {
   return (
     <TextField
@@ -13,6 +9,10 @@ function StyledInput({ ...rest }: TextFieldProps) {
           "& fieldset": {
             borderWidth: "2.5px",
             borderRadius: "10px",
+          },
+          // Change the color of the date icon
+          "& input[type='date']::-webkit-calendar-picker-indicator": {
+            filter: "invert(1)",  // Inverts color to make the icon white
           },
         },
       }}

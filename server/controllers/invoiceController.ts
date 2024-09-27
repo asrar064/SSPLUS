@@ -94,57 +94,34 @@ export const getMonthlyStoreStats = async (req: Request, res: Response) => {
   }
 };
 
-// Get the top-selling product by looking at the invoices
+// Get the invoice with the highest quantity sold and the product name
 export const getTopSellingProduct = async (req: Request, res: Response) => {
   const { id: owner } = req.params; // Get owner ID from request parameters
 
   try {
-    // Aggregate invoices by product and sum the quantities sold
-    const productSales = await Invoice.aggregate([
-      {
-        $match: { owner }, // Match only invoices of the owner by string (no ObjectId)
-      },
-      {
-        $group: {
-          _id: "$product", // Group by product ID
-          totalSold: { $sum: "$quantity" }, // Sum the quantities sold
-        },
-      },
-      {
-        $sort: { totalSold: -1 }, // Sort by totalSold in descending order
-      },
-      {
-        $limit: 1, // Only return the top-selling product
-      },
-    ]);
+    // Find the invoice with the highest quantity sold for the given owner and populate the product details
+    const highestInvoice = await Invoice.findOne({
+      owner: new mongoose.Types.ObjectId(owner),
+    })
+      .sort({ quantity: -1 }) // Sort by quantity in descending order
+      .limit(1) // Limit the result to one invoice
+      .populate("product"); // Populate the product field and return only the name
 
-    // If no invoices are found, return a 200 response with a message
-    if (productSales.length === 0) {
+    // console.log(highestInvoice)
+
+    // If no invoice is found, return a 200 response with a message
+    if (!highestInvoice) {
       return res.status(200).json({
         message: "No invoices found for this owner",
-        topProductName: null,
-        totalSold: 0,
+        invoice: null,
       });
     }
 
-    // Get the product ID of the top-selling product
-    const topProductId = productSales[0]._id;
-
-    // Find the product name from the Product model using the product ID
-    const topProduct = await Product.findById(topProductId);
-
-    // If product is not found in the Product collection
-    if (!topProduct) {
-      return res.status(200).json({
-        message: "Top-selling product not found in the product collection",
-        totalSold: productSales[0].totalSold,
-      });
-    }
-
-    // Return the top-selling product name and total sold
+    // Return the invoice with the highest quantity sold and the product name
     return res.status(200).json({
-      topProductName: topProduct.name,
-      totalSold: productSales[0].totalSold,
+      totalSold: highestInvoice?.quantity,
+      topProductName:
+        (highestInvoice.product as any)?.name || "Unknown product", // Safeguard if product is not found
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -205,5 +182,44 @@ export const getLowestSellingProduct = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// Controller to get the number of weekly purchases for a specific owner
+export const getWeeklyPurchases = async (req: Request, res: Response) => {
+  const { id: ownerId } = req.params; // Get ownerId from the request params
+
+  if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+    return res.status(400).json({ message: "Invalid owner ID" });
+  }
+
+  try {
+    const startOfWeek = new Date();
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Get the start of the current week
+
+    const invoices = await Invoice.aggregate([
+      {
+        $match: {
+          owner: new mongoose.Types.ObjectId(ownerId), // Filter by owner ID
+          createdAt: { $gte: startOfWeek }, // Only invoices from this week
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }, // Group by day
+          },
+          totalQuantity: { $sum: "$quantity" }, // Sum up quantities per day
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date ascending
+      },
+    ]);
+
+    res.status(200).json(invoices);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 };

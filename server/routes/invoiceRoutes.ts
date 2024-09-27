@@ -6,6 +6,7 @@ import {
   getMonthlyStoreStats,
   getTopSellingProduct,
   getLowestSellingProduct,
+  getWeeklyPurchases,
 } from "../controllers/invoiceController";
 
 const InvoiceRoutes = express.Router();
@@ -27,5 +28,8 @@ InvoiceRoutes.get("/getTopSellingProduct/:id", getTopSellingProduct);
 
 // Get Top Selling Product (GET)
 InvoiceRoutes.get("/getLowestSellingProduct/:id", getLowestSellingProduct);
+
+// Get Weekly Sold Products (GET)
+InvoiceRoutes.get("/getWeeklyPurchases/:id", getWeeklyPurchases);
 
 export default InvoiceRoutes;
