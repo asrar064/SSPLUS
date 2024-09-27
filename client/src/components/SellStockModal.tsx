@@ -65,7 +65,7 @@ function SellStockModal({
         data
       );
     },
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       // console.log(data);
       createInvoice();
       setOpenSnack({
