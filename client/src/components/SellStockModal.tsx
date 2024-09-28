@@ -39,24 +39,32 @@ function SellStockModal({
   const [searchTrigger, setSearchTrigger] = useState<boolean>(false);
   const [productQuantity, setProductQuantity] = useState<number>(1);
 
+  // Fetch product based on QR code
   const { data: foundProduct, status: foundProductStatus } = useQuery({
     queryKey: [`Product - ${qrNumber}`],
     queryFn: async () => {
       return axios.get(baseURL + "products/" + qrNumber);
     },
     enabled: searchTrigger,
-    select: (data) => {
-      return data.data as ProductProps;
-    },
+    select: (data) => data.data as ProductProps,
   });
 
-  // console.log(foundProductStatus, searchTrigger);
+  useEffect(() => {
+    if (foundProductStatus === "error") {
+      setOpenSnack({
+        open: true,
+        message: "Product not found",
+        severity: "error",
+      });
+    }
+  }, [foundProductStatus]);
 
   function SearchProduct(e: FormEvent) {
     e.preventDefault();
     setSearchTrigger(true);
   }
 
+  // Mutation for selling the product
   const { mutate: sellProduct, status: sellProductStatus } = useMutation({
     mutationKey: ["Product Sold" + foundProduct?._id],
     mutationFn: async (data: any) => {
@@ -65,12 +73,11 @@ function SellStockModal({
         data
       );
     },
-    onSuccess: async () => {
-      // console.log(data);
+    onSuccess: () => {
       createInvoice();
       setOpenSnack({
         open: true,
-        message: foundProduct?.name + " sold successfully",
+        message: `${foundProduct?.name} sold successfully`,
         severity: "success",
       });
       setOpenModal(false);
@@ -91,7 +98,7 @@ function SellStockModal({
     sellProduct(sellProdData);
   }
 
-  const { mutate: createInvoice, status: _createInvoiceStatus } = useMutation({
+  const { mutate: createInvoice } = useMutation({
     mutationFn: async () => {
       const totalPrice = productQuantity * (foundProduct?.price || 0);
       return await axios.post(baseURL + "invoices", {
@@ -109,9 +116,6 @@ function SellStockModal({
       });
       QC.invalidateQueries(["storeStats"] as unknown as InvalidateQueryFilters);
     },
-    onError: (error) => {
-      console.error("Error creating invoice:", error);
-    },
   });
 
   function IncreaseQuantity() {
@@ -125,16 +129,6 @@ function SellStockModal({
       setProductQuantity(productQuantity - 1);
     }
   }
-
-  useEffect(() => {
-    if (foundProductStatus === "error") {
-      setOpenSnack({
-        open: true,
-        message: "Product not found",
-        severity: "error",
-      });
-    }
-  }, [foundProduct, foundProductStatus]);
 
   useEffect(() => {
     if (!openModal) {
@@ -164,9 +158,13 @@ function SellStockModal({
           gap: "15px",
         }}
       >
-        {/* Conditional rendering based on product search state */}
         {formView ? (
           <>
+            {/* Show search input if product not found and search is triggered */}
+            {!foundProduct && searchTrigger && (
+              <Typography sx={{ color: "red" }}>Product not found. Please try again.</Typography>
+            )}
+            {/* Show search input only if no product is found and search is not triggered */}
             {!foundProduct && !searchTrigger && (
               <>
                 <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>
@@ -186,6 +184,7 @@ function SellStockModal({
                 />
               </>
             )}
+            {/* Show product details if found */}
             {foundProduct && (
               <Box sx={{ width: "100%", ...ColFlex, gap: 2.5 }}>
                 <Box

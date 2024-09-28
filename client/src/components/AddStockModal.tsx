@@ -48,7 +48,7 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
   const [demandInMonth, setDemandInMonth] = useState<string>("");
   const [expiryDate, setExpiryDate] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [picture, setPicture] = useState<string>("");
+  const [picture, setPicture] = useState<string>();
   const [quantity, setQuantity] = useState<number>(0);
 
   function LiveDp(event: any) {
@@ -100,19 +100,27 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
 
   function AddProduct(e: FormEvent) {
     e.preventDefault();
-    const productData: ProductProps = {
-      name,
-      qrNumber,
-      price,
-      demandInMonth,
-      expiryDate,
-      owner: userData?._id,
-      category,
-      picture,
-      quantity,
-    };
-    addProduct(productData);
-    // console.log(productData);
+    if (picture && quantity > 0 && category.length) {
+      const productData: ProductProps = {
+        name,
+        qrNumber,
+        price,
+        demandInMonth,
+        expiryDate,
+        owner: userData?._id,
+        category,
+        picture,
+        quantity,
+      };
+      addProduct(productData);
+      // console.log(productData);
+    } else {
+      setOpenSnack({
+        open: true,
+        message: "Missing Fields, Please fill all required fields",
+        severity: "error",
+      });
+    }
   }
 
   useEffect(() => {

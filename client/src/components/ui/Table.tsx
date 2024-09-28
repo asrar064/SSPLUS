@@ -114,7 +114,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
   }
 
   // Function to filter products based on the search term and category
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = products?.filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());

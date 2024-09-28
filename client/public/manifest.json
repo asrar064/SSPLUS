@@ -1,0 +1,23 @@
+{
+    "name": "StockSense",
+    "short_name": "SSense",
+    "description": "Standalone Inventory Manager.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#040404",
+    "theme_color": "#2997FC",
+    "icons": [
+      {
+        "src": "/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "splash_pages": null
+  }
+  

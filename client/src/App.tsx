@@ -12,8 +12,11 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import axios from "axios";
 import baseURL from "./api/baseURL";
 import ServerLoading from "./pages/ServerLoading";
+import { registerServiceWorker } from "./serviceWorkerRegisteration";
 
 function App() {
+  registerServiceWorker();
+
   const [themeMode] = useState<PaletteMode>("dark");
   const [userData, setUserData] = useState<UserTypes>();
   const navigate = useNavigate();
