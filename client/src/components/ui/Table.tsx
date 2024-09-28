@@ -12,6 +12,10 @@ import {
   MenuItem,
   Divider,
   Table,
+  Select,
+  MenuItem as SelectMenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import baseURL from "../../api/baseURL";
 import { RowFlex } from "../../theme/style_extentions/Flex";
@@ -28,6 +32,7 @@ import FormatIntoKs from "../../utils/FormatIntoKs";
 import EditStockModal from "../EditStockModal";
 import SnackbarContext from "../../context/SnackbarContext";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import StyledInput from "./StyledInput";
 
 // Define the TableComponent props, if any
 interface TableComponentProps {
@@ -48,6 +53,9 @@ const TableComponent: React.FC<TableComponentProps> = ({
   const [openEditStockModal, setOpenEditStockModal] = useState<boolean>(false);
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
 
+  const [searchTerm, setSearchTerm] = useState<string>(""); // For storing search input
+  const [selectedCategory, setSelectedCategory] = useState<string>(""); // For storing selected category
+
   const QC = useQueryClient();
 
   const { data: categories } = useQuery({
@@ -64,8 +72,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
     const category = categories?.find((cat: any) => cat._id === categoryId);
     return category ? category.name : undefined; // returns category name or undefined if not found
   };
-
-  // console.log(baseURL.slice(0, -7))
 
   const handleMenuOpen = (event: any, product: ProductProps) => {
     setAnchorEl(event.currentTarget); // Set the anchor element for the menu
@@ -107,6 +113,16 @@ const TableComponent: React.FC<TableComponentProps> = ({
     deleteProduct(); // Trigger the mutation
   }
 
+  // Function to filter products based on the search term and category
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
     <Box sx={{ width: "100%", height: "50vh" }}>
       {tableHeader && (
@@ -119,6 +135,46 @@ const TableComponent: React.FC<TableComponentProps> = ({
         title="Change Stock Details"
       />
       <TableContainer>
+        {/* Options Box */}
+        <Box
+          sx={{
+            ...RowFlex,
+            width: "75%",
+            gap: 1.5,
+            justifyContent: "flex-start",
+          }}
+        >
+          {/* Search Input */}
+          <Box sx={{ width: "40%", my: 2.5 }}>
+            <StyledInput
+              placeholder="Search Products"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
+            />
+          </Box>
+
+          {/* Category Filter */}
+          <FormControl sx={{ minWidth: 200, ml: 2.5 }}>
+            <InputLabel id="category-filter-label">Category</InputLabel>
+            <Select
+              sx={{ borderRadius: "10px" }}
+              labelId="category-filter-label"
+              value={selectedCategory}
+              label="Category"
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <SelectMenuItem value="">
+                <em>All Categories</em>
+              </SelectMenuItem>
+              {categories?.map((category: any) => (
+                <SelectMenuItem key={category._id} value={category._id}>
+                  {category.name}
+                </SelectMenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
         <Table sx={{ minWidth: 650 }} aria-label="TM's table">
           <TableHead>
             <TableRow>
@@ -132,8 +188,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {products?.length > 0 &&
-              products.map((product) => (
+            {filteredProducts?.length > 0 ? (
+              filteredProducts.map((product) => (
                 <TableRow
                   key={product._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -148,7 +204,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
                       }}
                     >
                       <Avatar
-                        // src={baseURL.slice(0, -7) + product?.picture || "/package-default.png"}
                         src={"/package-default.png"} // Static Image due to Free Server Not Letting File Saves.
                         sx={{
                           width: "30px",
@@ -233,7 +288,14 @@ const TableComponent: React.FC<TableComponentProps> = ({
                     </Menu>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  No products found
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

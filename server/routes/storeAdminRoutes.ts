@@ -5,7 +5,8 @@ import {
     loginStoreAdmin,
     editProfile,
     getStoreAdmins,
-    deleteStoreAdmin
+    deleteStoreAdmin,
+    ResetPasswordWithQuestion
 } from "../controllers/storeAdminController";
 
 const storeAdminRoutes = express.Router();
@@ -15,6 +16,9 @@ storeAdminRoutes.post("/signup", signupStoreAdmin);
 
 // Route to login a StoreAdmin
 storeAdminRoutes.post("/login", loginStoreAdmin);
+
+// Route to Reset Password
+storeAdminRoutes.post("/resetPasswordWithQuestion", ResetPasswordWithQuestion);
 
 // Route to edit a StoreAdmin's profile
 storeAdminRoutes.put("/editProfile/:id", editProfile);

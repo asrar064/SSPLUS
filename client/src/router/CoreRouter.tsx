@@ -12,6 +12,7 @@ import AllProducts from "../pages/AllProducts";
 import Categories from "../pages/Categories";
 import Statistics from "../pages/Statistics";
 import Account from "../pages/Account";
+import ForgotPassword from "../pages/ForgotPassword";
 
 function CoreRouter() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
@@ -34,6 +35,14 @@ function CoreRouter() {
           element={
             <IOSExpand>
               <Signup />
+            </IOSExpand>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <IOSExpand>
+              <ForgotPassword />
             </IOSExpand>
           }
         />

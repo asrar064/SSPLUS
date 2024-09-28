@@ -40,7 +40,7 @@ function Landing() {
     onSuccess: (data) => {
       console.log(data);
       setUserData!(data.data.storeAdmin);
-      setInLs("storeAdmin", data.data.storeAdmin)
+      setInLs("storeAdmin", data.data.storeAdmin);
       navigate("/store");
     },
     onError: (err: any) => {
@@ -124,10 +124,15 @@ function Landing() {
               type="password"
               placeholder="Password"
             />
-            <Typography variant="caption" color={"white"}>
-              By logging in, you agree to our{" "}
-              <span style={{ color: "#006FFD" }}>Terms of Service</span> and{" "}
-              <span style={{ color: "#006FFD" }}>Privacy Policy</span>.
+            <Typography
+              onClick={() => navigate("/forgot-password")}
+              sx={{ width: "100%", textAlign:"end", cursor: "pointer" }}
+              // size="medium"
+              variant="body2"
+              fontWeight={500}
+              color="error"
+            >
+              Forgot Password?
             </Typography>
             <StyledButton
               // onClick={Login}

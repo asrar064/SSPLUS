@@ -28,6 +28,33 @@ export const loginStoreAdmin = async (req: Request, res: Response) => {
     }
 };
 
+export const ResetPasswordWithQuestion = async (req: Request, res: Response) => {
+    const { email, storeAddress, newPassword } = req.body;
+
+    try {
+        // Find store admin by email
+        const storeAdmin = await StoreAdmin.findOne({ email });
+        if (!storeAdmin) {
+            return res.status(404).json({ message: "Store admin not found" });
+        }
+
+        // Check if the storeAddress matches
+        if ((storeAdmin as any).storeAddress != storeAddress) {
+            // console.log((storeAdmin as any).storeAddress, storeAddress)
+            return res.status(401).json({ message: "Store location does not match" });
+        }
+
+        // Update the password
+        storeAdmin.password = newPassword;
+        await storeAdmin.save();
+
+        res.status(200).json(storeAdmin);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 export const editProfile = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name, email, phone, storeName } = req.body;
