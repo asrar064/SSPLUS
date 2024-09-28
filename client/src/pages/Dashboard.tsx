@@ -20,10 +20,12 @@ import { useNavigate } from "react-router-dom";
 import WeeklyPurchasesChart from "../components/ui/WeeklyPurchaseChart";
 import SnackbarContext from "../context/SnackbarContext";
 import { SnackBarContextTypes } from "../types/SnackbarTypes";
+import isXSmall from "../utils/isXSmall";
 
 function Dashboard() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+  const { isXS } = isXSmall();
 
   const navigate = useNavigate();
 
@@ -108,7 +110,7 @@ function Dashboard() {
   return (
     <PageShell contentGap={5}>
       {/* Stat Box Container */}
-      <Box sx={{ ...RowFlex, width: "100%", gap: 2.5 }}>
+      <Box sx={{ ...RowFlex, flexDirection: isXS ? "column" : "row" , width: "100%", gap: 2.5 }}>
         <StatBox
           icon={<ShoppingBasket sx={{ fontSize: 40 }} />}
           title="Total Products Sold"
@@ -138,8 +140,13 @@ function Dashboard() {
       {/* Products In Demand This Month Table Container */}
       {productsInDemandThisMonth && (
         <TableComponent
-        tableHeader={"Products In Demand This Month" + "(" +productsInDemandThisMonth.length + ")"}
-        products={productsInDemandThisMonth}
+          tableHeader={
+            "Products In Demand This Month" +
+            "(" +
+            productsInDemandThisMonth.length +
+            ")"
+          }
+          products={productsInDemandThisMonth}
         />
       )}
       <WeeklyPurchasesChart />

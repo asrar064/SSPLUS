@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { ReactNode } from "react";
 import { ColFlex, RowFlex } from "../theme/style_extentions/Flex";
+import isXSmall from "../utils/isXSmall";
 
 interface StatBoxProps {
   icon: ReactNode;
@@ -19,11 +20,13 @@ const StatBox = ({
   subtitle,
   onClick,
 }: StatBoxProps) => {
+  const { isXS } = isXSmall();
+
   return (
     <Box
       sx={{
         ...ColFlex,
-        width,
+        width: isXS ? "100%" : width,
         color: "white",
         p: 2.5,
         border: "5px solid white",

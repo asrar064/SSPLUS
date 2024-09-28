@@ -5,11 +5,14 @@ import { Inventory, LocalOffer } from "@mui/icons-material";
 import { useState } from "react";
 import AddStockModal from "./AddStockModal";
 import SellStockModal from "./SellStockModal";
+import isXSmall from "../utils/isXSmall";
 
 function Appbar() {
   const [openAddStockModal, setOpenAddStockModal] = useState<boolean>(false);
   const [openSellProductModal, setOpenSellProductModal] =
     useState<boolean>(false);
+
+  const { isXS } = isXSmall();
 
   return (
     <Box
@@ -26,45 +29,47 @@ function Appbar() {
         component={"img"}
         src="/logo-rect.png"
         sx={{
-          width: "125px",
+          width: isXS ? "75px" : "125px",
           aspectRatio: 3,
         }}
       />
-      <Box sx={{ ...RowFlex, gap: 5, width: "30%" }}>
+      <Box sx={{ ...RowFlex, gap: isXS ? 0 : 5, width: isXS ? "70%" : "30%" }}>
         {/* <StyledInput placeholder="Search Products" /> */}
         <StyledButton
           onClick={() => setOpenAddStockModal(true)}
-          startIcon={<Inventory sx={{ mr: 1 }} />}
+          startIcon={<Inventory sx={{ mr: isXS ? 0 : 1 }} />}
           additonalStyles={{
             backgroundColor: "white",
             color: "black",
             p: 1,
             px: 3,
             width: "100%",
+            scale: isXS ? 0.75 : 1
           }}
-          text={"Add Stock"}
-        />
+          text={isXS ? "Add" : "Add Stock"}
+          />
         <AddStockModal
           title="Add Stock"
           openModal={openAddStockModal}
           setOpenModal={setOpenAddStockModal}
-        />
+          />
         <SellStockModal
           title="Sell Item"
           openModal={openSellProductModal}
           setOpenModal={setOpenSellProductModal}
-        />
+          />
         <StyledButton
           onClick={() => setOpenSellProductModal(true)}
-          startIcon={<LocalOffer sx={{ mr: 1 }} />}
+          startIcon={<LocalOffer sx={{ mr: isXS ? 0 : 1 }} />}
           additonalStyles={{
             backgroundColor: "white",
             color: "black",
             p: 1,
             px: 3,
             width: "100%",
+            scale: isXS ? 0.75 : 1
           }}
-          text={"Sell Items"}
+          text={isXS ? "Sell" : "Sell Items"}
         />
       </Box>
     </Box>

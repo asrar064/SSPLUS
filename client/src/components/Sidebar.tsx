@@ -65,7 +65,7 @@ function Sidebar() {
         ...ColFlex,
         justifyContent: "space-between",
         width: "25%",
-        height: "90vh",
+        height: isXS ? "100vh" : "90vh",
         borderRight: "2px solid lightgrey",
         py: 2.5,
       }}

@@ -33,6 +33,7 @@ import EditStockModal from "../EditStockModal";
 import SnackbarContext from "../../context/SnackbarContext";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 import StyledInput from "./StyledInput";
+import isXSmall from "../../utils/isXSmall";
 
 // Define the TableComponent props, if any
 interface TableComponentProps {
@@ -57,6 +58,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>(""); // For storing selected category
 
   const QC = useQueryClient();
+
+  const { isXS } = isXSmall();
 
   const { data: categories } = useQuery({
     queryKey: ["Categories"],
@@ -139,7 +142,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
         <Box
           sx={{
             ...RowFlex,
-            width: "75%",
+            width: isXS ? "100%" :"75%",
             gap: 1.5,
             justifyContent: "flex-start",
           }}

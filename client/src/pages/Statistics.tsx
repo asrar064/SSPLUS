@@ -10,9 +10,11 @@ import baseURL from "../api/baseURL";
 import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserDataContextTypes";
 import TableComponent from "../components/ui/Table";
+import isXSmall from "../utils/isXSmall";
 
 function Statistics() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
+  const { isXS } = isXSmall();
 
   // Get Store's Products Query
   const { data: topSellingItem, status: _topSellingItemStatus } = useQuery({
@@ -27,7 +29,7 @@ function Statistics() {
     },
   });
 
-  console.log(topSellingItem)
+  console.log(topSellingItem);
 
   // Get Store's getLowestSellingProduct Query
   const { data: lowestSellingProduct, status: _getLowestSellingProductStatus } =
@@ -56,11 +58,19 @@ function Statistics() {
     },
   });
 
-  console.log(lowestSellingProduct);
+  // console.log(lowestSellingProduct);
 
   return (
     <PageShell headerText="Store's Statistics">
-      <Box sx={{ ...RowFlex, width: "100%", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          ...RowFlex,
+          width: "100%",
+          justifyContent: "space-between",
+          flexDirection: isXS ? "column" : "row",
+          gap: isXS ? 2 : "auto"
+        }}
+      >
         <StatBox
           // title="Top Selling Item"
           value={topSellingItem?.topProductName}

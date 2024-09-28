@@ -5,8 +5,12 @@ import PageShell from "../components/PageShell";
 import { Box, Typography } from "@mui/material";
 import { ColFlex, RowFlex } from "../theme/style_extentions/Flex";
 import CategoryProps from "../types/CategoryProps";
+import isXSmall from "../utils/isXSmall";
 
 function Categories() {
+
+  const { isXS } = isXSmall();
+
   const { data: categories } = useQuery({
     queryKey: ["Categories"],
     queryFn: async () => {
@@ -18,7 +22,9 @@ function Categories() {
   });
 
   return (
-    <PageShell headerText={`Product Categories (${categories ? categories?.length : 0})`}>
+    <PageShell
+      headerText={`Product Categories (${categories ? categories?.length : 0})`}
+    >
       <Box
         sx={{
           width: "100%",
@@ -28,14 +34,19 @@ function Categories() {
           overflow: "auto",
           gap: "3.3%",
           justifyContent: "flex-start",
+          "&::-webkit-scrollbar": {
+            display: "none", // Hide scrollbar for WebKit browsers
+          },
+          scrollbarWidth: "none", // Hide scrollbar for Firefox
+          msOverflowStyle: "none", // Hide scrollbar for Internet Explorer and Edge
         }}
       >
         {categories?.map((category: CategoryProps) => (
           <Box
             sx={{
-              width: "30%",
+              width: isXS ? "100%" : "30%",
               height: "200px",
-              mb:"3.3%",
+              mb: isXS ? "10%" : "3.3%",
               position: "relative",
               ...ColFlex,
               border: "5px solid white",
@@ -49,7 +60,10 @@ function Categories() {
             }}
             key={category._id}
           >
-            <Typography sx={{ color: "white", fontWeight: 600, textAlign:'center' }} variant="h5">
+            <Typography
+              sx={{ color: "white", fontWeight: 600, textAlign: "center" }}
+              variant="h5"
+            >
               {category.name}
             </Typography>
           </Box>
