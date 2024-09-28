@@ -13,6 +13,7 @@ import Categories from "../pages/Categories";
 import Statistics from "../pages/Statistics";
 import Account from "../pages/Account";
 import ForgotPassword from "../pages/ForgotPassword";
+import Invoice from "../pages/Invoice";
 
 function CoreRouter() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
@@ -85,6 +86,14 @@ function CoreRouter() {
               element={
                 <SlideInOut>
                   <Account />
+                </SlideInOut>
+              }
+            />
+            <Route
+              path="invoice"
+              element={
+                <SlideInOut>
+                  <Invoice />
                 </SlideInOut>
               }
             />

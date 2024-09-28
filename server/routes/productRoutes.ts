@@ -10,6 +10,7 @@ import {
   getLowStockProducts,
   getProductByQrNumber,
   subtractProductStock,
+  getProductsInDemandThisMonth,
 } from "../controllers/productController";
 
 const productRoutes = express.Router();
@@ -34,6 +35,9 @@ productRoutes.get("/getProductsAddedToday/:id", getProductsAddedToday);
 
 // Route to get all Store's Products which need Restocking
 productRoutes.get("/getLowStockProducts/:id", getLowStockProducts);
+
+// Route to get In Demand Products This Month
+productRoutes.get("/getProductsInDemandThisMonth/:id", getProductsInDemandThisMonth);
 
 // Route to update a Product by ID
 productRoutes.put("/:id", updateProduct); // Removed multer middleware

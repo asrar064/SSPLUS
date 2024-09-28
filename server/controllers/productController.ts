@@ -202,3 +202,24 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Get Products in Demand for the Current Month
+export const getProductsInDemandThisMonth = async (req: Request, res: Response) => {
+  const { id } = req.params; // Get owner ID from request parameters
+  
+  // Get the current month in full name format (e.g., "September")
+  const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+
+  try {
+    // Find products with demandInMonth matching the current month and owner ID
+    const products = await Product.find({
+      demandInMonth: currentMonth,
+      owner: id, // Filter by owner ID
+    });
+
+    // Return an empty array if no products are in demand this month
+    res.status(200).json(products || []);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};

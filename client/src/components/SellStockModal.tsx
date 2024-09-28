@@ -19,6 +19,7 @@ import SnackbarContext from "../context/SnackbarContext";
 import { SnackBarContextTypes } from "../types/SnackbarTypes";
 import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserDataContextTypes";
+import { useNavigate } from "react-router-dom";
 
 interface AddStockModalProps {
   title: string;
@@ -31,6 +32,7 @@ function SellStockModal({
   openModal,
   setOpenModal,
 }: AddStockModalProps) {
+  const navigate = useNavigate();
   const [formView, setFormView] = useState<boolean>(false);
   const QC = useQueryClient();
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
@@ -38,6 +40,7 @@ function SellStockModal({
   const [qrNumber, setQrNumber] = useState<string>("");
   const [searchTrigger, setSearchTrigger] = useState<boolean>(false);
   const [productQuantity, setProductQuantity] = useState<number>(1);
+  const [isExpired, setIsExpired] = useState<boolean>(false); // Track if the product is expired
 
   // Fetch product based on QR code
   const { data: foundProduct, status: foundProductStatus } = useQuery({
@@ -57,7 +60,14 @@ function SellStockModal({
         severity: "error",
       });
     }
-  }, [foundProductStatus]);
+
+    // Check if the product is expired
+    if (foundProduct && foundProduct.expiryDate) {
+      const currentDate = new Date();
+      const expiryDate = new Date(foundProduct.expiryDate);
+      setIsExpired(expiryDate < currentDate); // Set expired status
+    }
+  }, [foundProductStatus, foundProduct]);
 
   function SearchProduct(e: FormEvent) {
     e.preventDefault();
@@ -108,12 +118,13 @@ function SellStockModal({
         owner: userData?._id,
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setOpenSnack({
         open: true,
         message: "Invoice created successfully",
         severity: "success",
       });
+      navigate("/store/invoice", { state: { invoice: data.data } });
       QC.invalidateQueries(["storeStats"] as unknown as InvalidateQueryFilters);
     },
   });
@@ -135,6 +146,7 @@ function SellStockModal({
       setFormView(false);
       setSearchTrigger(false);
       setQrNumber("");
+      setIsExpired(false); // Reset expired state when modal closes
     }
   }, [openModal]);
 
@@ -162,7 +174,9 @@ function SellStockModal({
           <>
             {/* Show search input if product not found and search is triggered */}
             {!foundProduct && searchTrigger && (
-              <Typography sx={{ color: "red" }}>Product not found. Please try again.</Typography>
+              <Typography sx={{ color: "red" }}>
+                Product not found. Please try again.
+              </Typography>
             )}
             {/* Show search input only if no product is found and search is not triggered */}
             {!foundProduct && !searchTrigger && (
@@ -227,6 +241,7 @@ function SellStockModal({
                         fontSize: 25,
                         ml: "auto",
                       }}
+                      disabled={isExpired}
                     />
                     <StyledButton
                       onClick={ReduceQuantity}
@@ -237,12 +252,18 @@ function SellStockModal({
                         color: "red",
                         fontSize: 25,
                       }}
+                      disabled={isExpired}
                     />
                   </Box>
                 </Box>
+                {isExpired && (
+                  <Typography sx={{ color: "red", mt: 1 }}>
+                    Warning: This product is expired. Cannot sell.
+                  </Typography>
+                )}
                 <StyledButton
                   onClick={SellProduct}
-                  disabled={sellProductStatus === "pending"}
+                  disabled={sellProductStatus === "pending" || isExpired} // Disable if expired
                   text={
                     sellProductStatus === "pending" ? (
                       <CircularProgress size={15} sx={{ color: "white" }} />

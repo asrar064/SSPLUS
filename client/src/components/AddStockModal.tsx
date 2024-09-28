@@ -34,6 +34,21 @@ interface AddStockModalProps {
   setOpenModal: (value: boolean) => void;
 }
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
   const [formView, setFormView] = useState<boolean>(false);
 
@@ -52,8 +67,6 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
   const [quantity, setQuantity] = useState<number>(0);
 
   function LiveDp(event: any) {
-    // setProfilePic(event.target.files[0])
-    // console.log(profilePic)
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
       reader.onload = (e: any) => {
@@ -100,7 +113,7 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
 
   function AddProduct(e: FormEvent) {
     e.preventDefault();
-    if (picture && quantity > 0 && category.length) {
+    if (picture && quantity > 0 && category.length && demandInMonth) {
       const productData: ProductProps = {
         name,
         qrNumber,
@@ -224,13 +237,31 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
                 hidden
               />
             </Button>
-            <StyledInput
+            {/* <StyledInput
               onChange={(e) => setDemandInMonth((e.target as any).value)}
               required
               fullWidth
               type="text"
               placeholder="Demand In Month"
-            />
+            /> */}
+            <FormControl fullWidth>
+              <InputLabel id="demand in month">Demand in Month</InputLabel>
+              <Select
+                labelId="demand in month"
+                id="demand in month"
+                value={demandInMonth}
+                label="Month of Demand"
+                onChange={(e) => setDemandInMonth(e.target.value)}
+              >
+                {months.map((month: any) => {
+                  return (
+                    <MenuItem key={month} value={month}>
+                      {month}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
           </Box>
 
           <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>

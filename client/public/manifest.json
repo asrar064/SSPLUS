@@ -4,7 +4,7 @@
     "description": "Standalone Inventory Manager.",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#040404",
+    "background_color": "#FFFFF",
     "theme_color": "#2997FC",
     "icons": [
       {

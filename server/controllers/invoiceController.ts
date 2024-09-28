@@ -24,11 +24,15 @@ export const createInvoice = async (req: Request, res: Response) => {
 
     await newInvoice.save(); // Save the invoice to the database
 
-    res.status(201).json(newInvoice); // Return the created invoice
+    // Populate the product field with the full product details
+    const populatedInvoice = await newInvoice.populate('product');
+
+    res.status(201).json(populatedInvoice); // Return the created invoice with populated product
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Get all invoices by owner
 export const getInvoicesByOwner = async (req: Request, res: Response) => {

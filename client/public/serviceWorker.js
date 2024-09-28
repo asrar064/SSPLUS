@@ -1,7 +1,7 @@
 // Service Worker File (sw.js)
 
 // Define the cache name
-const CACHE_NAME = 'iq-pilot-cache-v1';
+const CACHE_NAME = 'stocksense-cache';
 
 // List of files to cache
 const urlsToCache = [
@@ -9,8 +9,8 @@ const urlsToCache = [
   '/index.html',
   '/app.js',
   '/styles.css',
-  '/images/icon-192x192.png',
-  '/images/icon-512x512.png'
+  '/icon-192x192.png',
+  '/icon-512x512.png'
 ];
 
 // Install event

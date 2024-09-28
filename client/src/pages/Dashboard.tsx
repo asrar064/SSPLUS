@@ -42,17 +42,17 @@ function Dashboard() {
   console.log(storeStats);
 
   // Get Store's Products Query
-  const { data: products, status: productsStatus } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      return axios.get(
-        baseURL + "products/getProductsByOwnerId/" + userData?._id
-      );
-    },
-    select: (data) => {
-      return data.data;
-    },
-  });
+  // const { data: products, status: productsStatus } = useQuery({
+  //   queryKey: ["products"],
+  //   queryFn: async () => {
+  //     return axios.get(
+  //       baseURL + "products/getProductsByOwnerId/" + userData?._id
+  //     );
+  //   },
+  //   select: (data) => {
+  //     return data.data;
+  //   },
+  // });
 
   // Get Store's Products Query
   const { data: productsAddedToday } = useQuery({
@@ -73,6 +73,19 @@ function Dashboard() {
     queryFn: async () => {
       return axios.get(
         baseURL + "products/getLowStockProducts/" + userData?._id
+      );
+    },
+    select: (data) => {
+      return data.data;
+    },
+  });
+
+  // Get Store's Products In Demand Query
+  const { data: productsInDemandThisMonth } = useQuery({
+    queryKey: ["ProductsInDemandThisMonth"],
+    queryFn: async () => {
+      return axios.get(
+        baseURL + "products/getProductsInDemandThisMonth/" + userData?._id
       );
     },
     select: (data) => {
@@ -118,11 +131,18 @@ function Dashboard() {
           value={FormatIntoKs(lowStockProducts?.length || 0)}
         />
       </Box>
-      <WeeklyPurchasesChart />
       {/* Table Container */}
-      {productsStatus && (
+      {/* {productsStatus && (
         <TableComponent tableHeader="Recently Stocked" products={products} />
+        )} */}
+      {/* Products In Demand This Month Table Container */}
+      {productsInDemandThisMonth && (
+        <TableComponent
+        tableHeader={"Products In Demand This Month" + "(" +productsInDemandThisMonth.length + ")"}
+        products={productsInDemandThisMonth}
+        />
       )}
+      <WeeklyPurchasesChart />
     </PageShell>
   );
 }
