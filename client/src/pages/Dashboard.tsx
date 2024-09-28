@@ -7,7 +7,7 @@ import {
   ShowChart,
 } from "@mui/icons-material";
 import { RowFlex } from "../theme/style_extentions/Flex";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import TableComponent from "../components/ui/Table";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -18,11 +18,14 @@ import FormatIntoKs from "../utils/FormatIntoKs";
 import StatBox from "../components/StatBox";
 import { useNavigate } from "react-router-dom";
 import WeeklyPurchasesChart from "../components/ui/WeeklyPurchaseChart";
+import SnackbarContext from "../context/SnackbarContext";
+import { SnackBarContextTypes } from "../types/SnackbarTypes";
 
 function Dashboard() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Get Store Stats Query
   const { data: storeStats } = useQuery({
@@ -77,6 +80,18 @@ function Dashboard() {
     },
   });
 
+  useEffect(() => {
+    if (lowStockProducts && lowStockProducts.length > 0) {
+      setOpenSnack({
+        open: true,
+        message:
+          lowStockProducts?.length +
+          " product(s) are low in stock. Please restock them to avoid any disruptions.",
+        severity: "warning",
+      });
+    }
+  }, [lowStockProducts]);
+
   return (
     <PageShell contentGap={5}>
       {/* Stat Box Container */}
@@ -85,12 +100,12 @@ function Dashboard() {
           icon={<ShoppingBasket sx={{ fontSize: 40 }} />}
           title="Total Products Sold"
           value={FormatIntoKs(storeStats?.totalProductsSold || 0)}
-          />
+        />
         <StatBox
           icon={<CurrencyRupee sx={{ fontSize: 40 }} />}
           title="Revenue Generated"
           value={FormatIntoKs(storeStats?.totalRevenue || 0)}
-          />
+        />
         <StatBox
           icon={<NewReleases sx={{ fontSize: 40 }} />}
           title="New Products"
@@ -103,7 +118,7 @@ function Dashboard() {
           value={FormatIntoKs(lowStockProducts?.length || 0)}
         />
       </Box>
-      <WeeklyPurchasesChart/>
+      <WeeklyPurchasesChart />
       {/* Table Container */}
       {productsStatus && (
         <TableComponent tableHeader="Recently Stocked" products={products} />
