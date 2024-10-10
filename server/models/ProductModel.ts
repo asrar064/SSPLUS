@@ -10,6 +10,7 @@ interface IProduct extends Document {
   category: string; // Refers to the category ID
   picture?: string; // Path to the product image
   quantity: number; // Available quantity of the product
+  gst: number; // gst % of the product
   createdAt: Date; // Timestamp of when the product was created
 }
 
@@ -49,6 +50,10 @@ const productSchema: Schema = new Schema({
     required: false, // This field is optional
   },
   quantity: {
+    type: Number,
+    required: true,
+  },
+  gst: {
     type: Number,
     required: true,
   },

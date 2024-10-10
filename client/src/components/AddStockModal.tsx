@@ -65,6 +65,7 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
   const [category, setCategory] = useState<string>("");
   const [picture, setPicture] = useState<string>();
   const [quantity, setQuantity] = useState<number>(0);
+  const [gst, setGst] = useState<number>(0);
 
   function LiveDp(event: any) {
     if (event.target.files && event.target.files[0]) {
@@ -124,6 +125,7 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
         category,
         picture,
         quantity,
+        gst
       };
       addProduct(productData);
       // console.log(productData);
@@ -146,6 +148,7 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
       setExpiryDate("");
       setCategory("");
       setPicture("");
+      setGst(0)
     }
   }, [openModal]);
 
@@ -189,13 +192,22 @@ function AddStockModal({ title, openModal, setOpenModal }: AddStockModalProps) {
             />
           </Box>
           <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>
-            <StyledInput
-              onChange={(e) => setPrice((e.target as any).value)}
-              required
-              fullWidth
-              type="number"
-              placeholder="Price"
-            />
+            <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>
+              <StyledInput
+                onChange={(e) => setPrice((e.target as any).value)}
+                required
+                fullWidth
+                type="number"
+                placeholder="Price"
+              />
+              <StyledInput
+                onChange={(e) => setGst((e.target as any).value)}
+                required
+                fullWidth
+                type="number"
+                placeholder="GST (%)"
+              />
+            </Box>
             <FormControl fullWidth>
               <InputLabel id="product category">Category</InputLabel>
               <Select

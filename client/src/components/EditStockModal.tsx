@@ -3,7 +3,7 @@ import { ColFlex, RowFlex } from "../theme/style_extentions/Flex";
 import GlobalModal from "./ui/Modal";
 import StyledButton from "./ui/StyledButton";
 import StyledInput from "./ui/StyledInput";
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import {
   InvalidateQueryFilters,
   useMutation,
@@ -35,11 +35,9 @@ function EditStockModal({
 
   const [name, setName] = useState<string>(product?.name);
   const [price, setPrice] = useState<number>(product?.price);
-  const [demandInMonth, setDemandInMonth] = useState<string>(
-    product?.demandInMonth
-  );
   const [expiryDate, setExpiryDate] = useState<string>(product?.expiryDate);
   const [quantity, setQuantity] = useState<number>(product?.quantity);
+  const [gst, setGst] = useState<number>(product?.gst);
 
   const { mutate: updateProduct, status: updateProductStatus } = useMutation({
     mutationKey: ["Updated Product" + product?._id],
@@ -72,8 +70,8 @@ function EditStockModal({
       name,
       //   qrNumber,
       price,
-      demandInMonth,
       expiryDate,
+      gst,
       //   owner: userData?._id,
       //   category,
       //   picture,
@@ -82,6 +80,17 @@ function EditStockModal({
     updateProduct(productData);
     // console.log(productData);
   }
+
+  useEffect(() => {
+    const clearForm = () => {
+      setName(product?.name);
+      setPrice(product?.price);
+      setExpiryDate(product?.expiryDate);
+      setQuantity(product?.quantity);
+      setGst(product?.gst);
+    }
+    clearForm()
+  }, [product])
 
   return (
     <GlobalModal
@@ -116,20 +125,20 @@ function EditStockModal({
         </Box>
         <Box sx={{ ...RowFlex, width: "100%", gap: 1 }}>
           <StyledInput
-            onChange={(e) => setPrice((e.target as any).value)}
             defaultValue={product?.price}
+            onChange={(e) => setPrice((e.target as any).value)}
             required
             fullWidth
             type="number"
             placeholder="Price"
           />
           <StyledInput
-            onChange={(e) => setDemandInMonth((e.target as any).value)}
-            defaultValue={product?.demandInMonth}
+            defaultValue={product?.gst}
+            onChange={(e) => setGst((e.target as any).value)}
             required
             fullWidth
-            type="text"
-            placeholder="Demand In Month"
+            type="number"
+            placeholder="GST (%)"
           />
         </Box>
 

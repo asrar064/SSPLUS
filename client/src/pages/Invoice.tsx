@@ -51,17 +51,17 @@ function Invoice() {
         <Typography variant="h6">
           Total Amount: ₹{invoice?.totalPrice}
         </Typography>
-        <Typography variant="h6">GST: 18%</Typography>
+        <Typography variant="h6">GST (Included): {invoice?.product?.gst}%</Typography>
         <Typography variant="h6">Payment Status: Successful</Typography>
         <Typography variant="h6">
           Payment Date: {new Date(invoice?.createdAt).toLocaleString()}
         </Typography>
         <Typography sx={{ mt: 1 }} variant="h6">
-          Bought from - {userData?.storeName}
+          Bought from - {userData?.storeName} - {userData?.phone}
         </Typography>
         <Typography variant="h6">{userData?.storeAddress}</Typography>
 
-        <Button onClick={handlePrint} variant="contained" sx={{ mt: 2 }}>
+        <Button onClick={handlePrint} variant="contained" sx={{ mt: 2, color: 'white', fontWeight: 600 }}>
           Print Invoice
         </Button>
       </Box>

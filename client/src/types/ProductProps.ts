@@ -9,5 +9,6 @@ export interface ProductProps {
   category: string; // Refers to the category ID
   picture?: string; // Path to the product image
   quantity: number; // Available quantity of the product
+  gst: number; // Available quantity of the product
   createdAt?: Date; // Timestamp of when the product was created
 }

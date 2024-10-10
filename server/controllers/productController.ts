@@ -13,6 +13,7 @@ export const createProduct = async (req: Request, res: Response) => {
     category,
     quantity,
     picture,
+    gst,
     owner,
   } = req.body;
 
@@ -27,6 +28,7 @@ export const createProduct = async (req: Request, res: Response) => {
     category,
     picture: processedImage, // Send Base64 Image Format
     quantity,
+    gst,
     owner, // Reference to the owner (Store Admin)
   });
 
@@ -162,6 +164,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     expiryDate,
     category,
     quantity,
+    gst,
     picture,
   } = req.body; // Accept picture in the request
 
@@ -177,6 +180,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         category,
         picture,
         quantity,
+        gst
       },
       { new: true }
     );
