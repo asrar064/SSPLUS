@@ -209,6 +209,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                     >
                       <Avatar
                         src={"/package-default.png"} // Static Image due to Free Server Not Letting File Saves.
+                        // src={"http://localhost:3000/" + product?.picture}
                         sx={{
                           width: "30px",
                           height: "30px",
