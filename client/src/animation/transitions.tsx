@@ -5,14 +5,16 @@ export const FadeIn = ({
   children,
   duration = 0.35,
   delay = 0,
+  additionalStyles={}
 }: {
   children: ReactNode;
   duration?: number;
   delay?: number;
+  additionalStyles?: any;
 }) => {
   return (
     <motion.div
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%", ...additionalStyles }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
