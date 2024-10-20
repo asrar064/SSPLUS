@@ -45,7 +45,7 @@ const WeeklyPurchasesChart = () => {
     },
   });
 
-  console.log(weeklySoldProducts)
+  // console.log(weeklySoldProducts)
 
   if (isLoading) return <div>Loading...</div>;
   if (error)

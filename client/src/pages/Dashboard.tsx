@@ -21,10 +21,12 @@ import WeeklyPurchasesChart from "../components/ui/WeeklyPurchaseChart";
 import SnackbarContext from "../context/SnackbarContext";
 import { SnackBarContextTypes } from "../types/SnackbarTypes";
 import isXSmall from "../utils/isXSmall";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 function Dashboard() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+  const { setInLs, getFromLs } = useLocalStorage();
   const { isXS } = isXSmall();
 
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ function Dashboard() {
     },
   });
 
-  console.log(storeStats);
+  // console.log(storeStats);
 
   // Get Store's Products Query
   // const { data: products, status: productsStatus } = useQuery({
@@ -104,13 +106,35 @@ function Dashboard() {
           " product(s) are low in stock. Please restock them to avoid any disruptions.",
         severity: "warning",
       });
+      const lowStockProductsInLs = getFromLs("lowStockProducts") | 0;
+      setInLs("lowStockProducts", lowStockProducts?.length);
+      if (lowStockProducts?.length > lowStockProductsInLs) {
+        console.log("Restocking Email Request Sent!");
+        // Send Email to Restock Products
+        axios
+          .post(baseURL + "storeAdmin/sendLowStockEmail", {
+            store: userData,
+            lowStockItemsCount: lowStockProducts.length,
+          })
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+      } else {
+        console.log("Quantity Same. Email Not Sent!");
+      }
     }
   }, [lowStockProducts]);
 
   return (
     <PageShell contentGap={5}>
       {/* Stat Box Container */}
-      <Box sx={{ ...RowFlex, flexDirection: isXS ? "column" : "row" , width: "100%", gap: 2.5 }}>
+      <Box
+        sx={{
+          ...RowFlex,
+          flexDirection: isXS ? "column" : "row",
+          width: "100%",
+          gap: 2.5,
+        }}
+      >
         <StatBox
           icon={<ShoppingBasket sx={{ fontSize: 40 }} />}
           title="Total Products Sold"
